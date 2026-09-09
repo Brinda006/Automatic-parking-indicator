@@ -1,0 +1,68 @@
+## 💻 Arduino Source Code
+
+```cpp
+// Pin Definitions
+const int trigPin = 9;
+const int echoPin = 10;
+const int greenLed = 2;
+const int yellowLed = 3;
+const int redLed = 4;
+
+// Variables
+long duration;
+int distance;
+
+void setup() {
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+  
+  pinMode(greenLed, OUTPUT);
+  pinMode(yellowLed, OUTPUT);
+  pinMode(redLed, OUTPUT);
+  
+  Serial.begin(9600);
+}
+
+void loop() {
+  // Clear trigPin
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  
+  // Send 10µs pulse
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+  
+  // Read echoPin
+  duration = pulseIn(echoPin, HIGH);
+  
+  // Calculate distance in centimeters
+  distance = duration * 0.034 / 2;
+  
+  // Print distance to Serial Monitor
+  Serial.print("Distance: ");
+  Serial.print(distance);
+  Serial.println(" cm");
+  
+  // LED Logic based on distance threshold
+  if (distance > 30) {
+    // Safe Range
+    digitalWrite(greenLed, HIGH);
+    digitalWrite(yellowLed, LOW);
+    digitalWrite(redLed, LOW);
+  } 
+  else if (distance <= 30 && distance > 10) {
+    // Caution Range
+    digitalWrite(greenLed, LOW);
+    digitalWrite(yellowLed, HIGH);
+    digitalWrite(redLed, LOW);
+  } 
+  else {
+    // Stop Range
+    digitalWrite(greenLed, LOW);
+    digitalWrite(yellowLed, LOW);
+    digitalWrite(redLed, HIGH);
+  }
+  
+  delay(100);
+}
